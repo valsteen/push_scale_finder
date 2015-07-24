@@ -95,7 +95,7 @@
             $("form").submit(function (event) {
                 event.preventDefault();
                 
-                var notes = $("#notes").val();
+                var notes = $("#notes").val().toUpperCase();
                 
                 var search = new RegExp($.unique($.map(notes.match(/[A-G]#?/g), pad).sort(noteOrder)).join(".*"));
                 var result = [];
