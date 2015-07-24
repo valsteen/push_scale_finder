@@ -17,6 +17,10 @@
             -moz-border-radius: 8px;
             border-radius: 8px;
         }
+
+        .list-group-item {
+            margin-right: -1px;
+        }
     </style>
 </head>
 <body style="overflow-y: scroll;">
@@ -55,7 +59,7 @@
                         </div>
                     </div>
                 </form>
-                <div class="col-lg-6 panel panel-default" style="margin-top: 10px;">
+                <div class="panel panel-default" style="margin-top: 10px;">
                     <div class="panel-body" id="result">
                         Result will appear here
                     </div>
@@ -137,7 +141,8 @@
                 $.each(ALL_SCALES_NAMES, function (_, name) {
                     var notes = ALL_SCALES[name];
                     if ((notes + " " + notes).match(search)) {
-                        result.push("<tr><td>" + name + '</td><td><samp>' + notes + "</samp></td></tr>");
+                        //result.push("<tr><td>" + name + '</td><td><samp>' + notes + "</samp></td></tr>");
+                        result.push('<div class="list-group-item col-lg-6"><div class="col-lg-6">' + name + '</div><div class="col-lg-6"><samp>' + notes + '</samp></div></div>');
                     }
                 });
             }
@@ -149,7 +154,7 @@
             });
 
             if (result.length) {
-                $("#result").html('<p>Matches found:</p><table class="table table-bordered"><tbody>' + result.join("") + "</tbody></table>");
+                $("#result").html('<p>Matches found:</p>'+result.join(""));
             } else {
                 $("#result").html("No matches");
             }
