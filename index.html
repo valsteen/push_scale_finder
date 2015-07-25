@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en-us">
-  <head>
+<head>
     <meta charset="UTF-8">
     <title>Push scale finder by valsteen</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,130 +10,194 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
-  </head>
-  <body>
-    <section class="page-header" style="margin:0;">
-      <h1 class="project-name">Push scale finder</h1>
-      <br/>
-      <a href="https://github.com/valsteen/push_scale_finder" class="btn">View on GitHub</a>
-      <a href="https://github.com/valsteen/push_scale_finder/zipball/master" class="btn">Download .zip</a>
-      <a href="https://github.com/valsteen/push_scale_finder/tarball/master" class="btn">Download .tar.gz</a>
-    </section>
+    <style>
 
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h2>Find a matching built-in scale in Ableton Push</h2>
-                    <form>
-                      <div class="form-group">
-                        <label for="notes">Notes</label>
-                        <input type="text" name="notes" class="form-control" id="notes" placeholder="C D E G# A B">
-                        <p class="help-block">Space-separated list of notes</p>
-                      </div>
-                      <button type="submit" class="btn btn-default">Find scale</button>
-                    </form>
-                    <div class="col-lg-6 panel panel-default" style="margin-top: 10px;">
-                        <div class="panel-body" id="result">
-                        Result will appear here
-                        </div>
+
+        .list-group-item {
+            margin-right: -1px;
+        }
+
+        .note-button {
+            margin-left: 0 !important;
+        }
+    </style>
+</head>
+<body style="overflow-y: scroll">
+<section class="page-header" style="margin:0;">
+    <h1 class="project-name">Push scale finder</h1>
+    <br/>
+    <a href="https://github.com/valsteen/push_scale_finder" class="btn">View on GitHub</a>
+    <a href="https://github.com/valsteen/push_scale_finder/zipball/master" class="btn">Download .zip</a>
+    <a href="https://github.com/valsteen/push_scale_finder/tarball/master" class="btn">Download .tar.gz</a>
+</section>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <h2>Find a matching built-in scale in Ableton Push</h2>
+
+            <form>
+                <div class="row">
+                    <div class="input-group">
+
+                        <input type="text" name="notes" class="form-control" id="notes" placeholder="C D E G# A B"
+                               autocomplete="off"/>
+                            <span class="input-group-btn">
+                                <input type="button" class="note-button btn btn-default" value="Clear"/>
+                            </span>
+
                     </div>
+                </div>
+                <div class="row" style="margin-top: 10px">
+                    <div class="form-group">
+                        <input type="button" class="note-button btn btn-default col-lg-1 btn-lg" value="C"/>
+                        <input type="button" class="note-button btn btn-default col-lg-1 btn-lg" value="C#"/>
+                        <input type="button" class="note-button btn btn-default col-lg-1 btn-lg" value="D"/>
+                        <input type="button" class="note-button btn btn-default col-lg-1 btn-lg" value="D#"/>
+                        <input type="button" class="note-button btn btn-default col-lg-1 btn-lg" value="E"/>
+                        <input type="button" class="note-button btn btn-default col-lg-1 btn-lg" value="F"/>
+                        <input type="button" class="note-button btn btn-default col-lg-1 btn-lg" value="F#"/>
+                        <input type="button" class="note-button btn btn-default col-lg-1 btn-lg" value="G"/>
+                        <input type="button" class="note-button btn btn-default col-lg-1 btn-lg" value="G#"/>
+                        <input type="button" class="note-button btn btn-default col-lg-1 btn-lg" value="A"/>
+                        <input type="button" class="note-button btn btn-default col-lg-1 btn-lg" value="A#"/>
+                        <input type="button" class="note-button btn btn-default col-lg-1 btn-lg" value="B"/>
+                    </div>
+                </div>
+            </form>
+            <div class="panel panel-default" style="margin-top: 10px;">
+                <div class="panel-body" id="result">
+                    Result will appear here
                 </div>
             </div>
         </div>
+    </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script>
-        jQuery(function ($) {
-            var SCALES = 
-            {
-                'Bhairav': [1, 3, 1, 2, 1, 3],
-                'Minor Pentatonic': [3, 2, 2, 3],
-                'Whole-half': [2, 1, 2, 1, 2, 1, 2],
-                'Minor Gypsy': [1, 3, 1, 2, 1, 2],
-                'Minor': [2, 1, 2, 2, 1, 2],
-                'Pelog': [1, 2, 1, 3, 1]  ,
-                'Mixolydian': [2, 2, 1, 2, 2, 1],
-                'Harmonic Minor': [2, 1, 2, 2, 1, 3],
-                'Minor Blues': [3, 2, 1, 1, 3]  ,
-                'Hirojoshi': [2, 1, 4, 1]     ,
-                'Whole Tone': [2, 2, 2, 2, 2]  ,
-                'Kumoi': [2, 1, 4, 2]     ,
-                'Iwato': [1, 4, 1, 4]     ,
-                'Super Locrian': [1, 2, 1, 2, 2, 2],
-                'Phrygian': [1, 2, 2, 2, 1, 2],
-                'Diminished': [1, 2, 1, 2, 1, 2, 1],
-                'Major': [2, 2, 1, 2, 2, 2],
-                'Locrian': [1, 2, 1, 3, 1, 2],
-                'In-Sen': [1, 4, 2, 3]     ,
-                'Hungarian Minor': [2, 1, 3, 1, 1, 3],
-                'Major Pentatonic': [2, 2, 3, 2]     ,
-                'Lydian': [2, 2, 2, 1, 2, 2],
-                'Dorian': [2, 1, 2, 2, 2, 1],
-                'Spanish': [1, 2, 1, 1, 1, 2, 2],
-                'Melodic Minor': [2, 1, 2, 2, 2, 2]
-            };
+    jQuery(function ($) {
+        var SCALES =
+        {
+            'Bhairav': [1, 3, 1, 2, 1, 3],
+            'Minor Pentatonic': [3, 2, 2, 3],
+            'Whole-half': [2, 1, 2, 1, 2, 1, 2],
+            'Minor Gypsy': [1, 3, 1, 2, 1, 2],
+            'Minor': [2, 1, 2, 2, 1, 2],
+            'Pelog': [1, 2, 1, 3, 1],
+            'Mixolydian': [2, 2, 1, 2, 2, 1],
+            'Harmonic Minor': [2, 1, 2, 2, 1, 3],
+            'Minor Blues': [3, 2, 1, 1, 3],
+            'Hirojoshi': [2, 1, 4, 1],
+            'Whole Tone': [2, 2, 2, 2, 2],
+            'Kumoi': [2, 1, 4, 2],
+            'Iwato': [1, 4, 1, 4],
+            'Super Locrian': [1, 2, 1, 2, 2, 2],
+            'Phrygian': [1, 2, 2, 2, 1, 2],
+            'Diminished': [1, 2, 1, 2, 1, 2, 1],
+            'Major': [2, 2, 1, 2, 2, 2],
+            'Locrian': [1, 2, 1, 3, 1, 2],
+            'In-Sen': [1, 4, 2, 3],
+            'Hungarian Minor': [2, 1, 3, 1, 1, 3],
+            'Major Pentatonic': [2, 2, 3, 2],
+            'Lydian': [2, 2, 2, 1, 2, 2],
+            'Dorian': [2, 1, 2, 2, 2, 1],
+            'Spanish': [1, 2, 1, 1, 1, 2, 2],
+            'Melodic Minor': [2, 1, 2, 2, 2, 2]
+        };
 
-            var NOTES = ['C ', 'C#', 'D ', 'D#', 'E ', 'F ', 'F#', 'G ', 'G#', 'A ', 'A#', 'B '];
+        var NOTES = ['C ', 'C#', 'D ', 'D#', 'E ', 'F ', 'F#', 'G ', 'G#', 'A ', 'A#', 'B '];
 
-            var ALL_SCALES = {};
+        var ALL_SCALES = {};
 
-            function noteOrder(a,b) { return NOTES.indexOf(a.substring(0,2)) - NOTES.indexOf(b.substring(0,2)) }
+        function noteOrder(a, b) {
+            return NOTES.indexOf(a.substring(0, 2)) - NOTES.indexOf(b.substring(0, 2))
+        }
 
-            $.each(SCALES, function (name, distances) {
-                $.each(NOTES, function (note_idx, note) {
-                    var scale = note;
-                    var current_distance = 0;
+        $.each(SCALES, function (name, distances) {
+            $.each(NOTES, function (note_idx, note) {
+                var scale = note;
+                var current_distance = 0;
 
-                    $.each(distances, function (_, distance) {
-                        current_distance += distance ;
-                        scale += " " + NOTES[(note_idx + current_distance) % 12];
-                    });
-                    ALL_SCALES[note + " " + name] = scale ;
+                $.each(distances, function (_, distance) {
+                    current_distance += distance;
+                    scale += " " + NOTES[(note_idx + current_distance) % 12];
                 });
+                ALL_SCALES[note + " " + name] = scale;
             });
+        });
 
-            var ALL_SCALES_NAMES = $.map(ALL_SCALES, function(_, name) { return name; }).sort(noteOrder);
+        var ALL_SCALES_NAMES = $.map(ALL_SCALES, function (_, name) {
+            return name;
+        }).sort(noteOrder);
 
-            function pad(s) {
-                if (s.length == 1) return s + " ";
-                return s;
-            }
+        function pad(s) {
+            if (s.length == 1) return s + " ";
+            return s;
+        }
 
-            $("form").submit(function (event) {
-                event.preventDefault();
-                
-                var notes = $("#notes").val();
-                
-                var search = new RegExp($.unique($.map(notes.match(/[A-G]#?/g), pad).sort(noteOrder)).join(".*"));
-                var result = [];
+        function submit() {
+            var result = [];
+            var notes = $("#notes").val().toUpperCase() || "";
+            var selectedNotes = $.unique($.map(notes.match(/[A-G]#?/g) || [], pad).sort(noteOrder));
+
+            if (selectedNotes.length) {
+                var search = new RegExp(selectedNotes.join(".*"));
                 $.each(ALL_SCALES_NAMES, function (_, name) {
                     var notes = ALL_SCALES[name];
-                    if ((notes+" "+notes).match(search)) { result.push("<tr><td>" + name + '</td><td><samp>' + notes  + "</samp></td></tr>");}
+                    if ((notes + " " + notes).match(search)) {
+                        //result.push("<tr><td>" + name + '</td><td><samp>' + notes + "</samp></td></tr>");
+                        result.push('<div class="list-group-item col-lg-6"><div class="col-lg-6">' + name + '</div><div class="col-lg-6"><samp>' + notes + '</samp></div></div>');
+                    }
                 });
+            }
 
-                if (result.length) {
-                    $("#result").html('<p>Matches found:</p><table class="table table-bordered"><tbody>' + result.join("") + "</tbody></table>");
-                } else {
-                    $("#result").html("No matches");
-                }
-                $("#notes").focus();
-                return false;
+            $(".note-button").removeClass("active");
+
+            $.each(selectedNotes, function (_, note) {
+                $(".note-button[value=" + note + "]").addClass("active");
             });
 
+            if (result.length) {
+                $("#result").html('<p>Matches found:</p>'+result.join(""));
+            } else {
+                $("#result").html("No matches");
+            }
             $("#notes").focus();
-        });
-    </script>
+            return false;
+        }
 
-    <script type="text/javascript">
-        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-    </script>
-    <script type="text/javascript">
-        try {
-            var pageTracker = _gat._getTracker("UA-65371118-1");
-            pageTracker._trackPageview();
-        } catch(err) {}
-    </script>
-  </body>
+        $("form").submit(function (event) {
+            event.preventDefault();
+            submit();
+        }).on('input', submit);
+
+        $(".note-button").on("click", function () {
+            var $this = $(this);
+            var note = $this.val();
+
+            var notes = $("#notes").val();
+            if ($this.hasClass("active")) {
+                if (note.indexOf("#") > -1) {
+                    notes = notes.replace(new RegExp(note, "g"), "");
+                } else {
+                    notes = notes.replace(new RegExp(note + "(?!#)", "g"), "");
+                }
+            } else {
+                notes += note;
+            }
+
+            $("#notes").val(notes);
+            submit();
+        });
+
+        $("[value=Clear]").on("click", function () {
+            $("#notes").val("");
+            window.setTimeout(submit, 0); // otherwise confused with the new value
+        });
+
+        $("#notes").focus();
+    });
+</script>
+</body>
 </html>
 
