@@ -37,7 +37,7 @@
                             <input type="text" name="notes" class="form-control" id="notes" placeholder="C D E G# A B"
                                    autocomplete="off"/>
                             <span class="input-group-btn">
-                                <input type="button" class="note-button btn btn-default" value="Clear"/>
+                                <input type="button" class="btn btn-default" value="Clear"/>
                             </span>
 
                         </div>
@@ -154,7 +154,7 @@
             });
 
             if (result.length) {
-                $("#result").html('<p>Matches found:</p>'+result.join(""));
+                $("#result").html('<p>Matches found:</p>' + result.join(""));
             } else {
                 $("#result").html("No matches");
             }
@@ -192,7 +192,32 @@
         });
 
         $("#notes").focus();
+
+
+        // try to connect to MIDI device
+
+        function onMidiSuccess(midiAccess) {
+            var inputs = midiAccess.inputs.values();
+            // loop over all available inputs and listen for any MIDI input
+            for (var input = inputs.next(); input && !input.done; input = inputs.next()) {
+                // each time there is a midi message call the onMIDIMessage function
+                input.value.onmidimessage = onMIDIMessage;
+            }
+        }
+
+        function onMIDIMessage(message) {
+            if (message.data[0] != 144) return ;
+            var note = NOTES [message.data[1] % 12];
+            $(".note-button[value="+note+"]").trigger("click");
+        }
+
+        if (navigator.requestMIDIAccess) {
+            navigator.requestMIDIAccess({
+                sysex: false
+            }).then(onMidiSuccess);
+        }
     });
+
 </script>
 </body>
 </html>
